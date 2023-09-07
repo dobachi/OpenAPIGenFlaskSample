@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Stock API
+  version: 1.0.0
+servers:
+- url: http://localhost:3003
+tags:
+- description: 株価取得
+  name: stockPrice
+paths:
+  /v1/sc/{security_cd}/stockPrice:
+    get:
+      description: 現在の株価を取得する
+      operationId: stockPrice
+      parameters:
+      - description: 証券コードを指定する
+        example: "4722"
+        explode: false
+        in: path
+        name: security_cd
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockPrice'
+          description: success
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal Server Error
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: その他予期せぬエラー
+      summary: 株価取得
+      tags:
+      - stockPrice
+components:
+  schemas:
+    StockPrice:
+      example:
+        volume: 221400
+        high: 1762
+        low: 1704
+        price: 1741
+        open: 1715
+      properties:
+        price:
+          description: 現在の株価
+          example: 1741
+          format: double
+          type: number
+        open:
+          description: 始値
+          example: 1715
+          format: double
+          type: number
+        high:
+          description: 高値
+          example: 1762
+          type: number
+        low:
+          description: 安値
+          example: 1704
+          type: number
+        volume:
+          description: 出来高
+          example: 221400
+          type: number
+    Error:
+      properties:
+        message:
+          description: エラーメッセージ
+          type: string
+        field:
+          description: エラー種別
+          type: string
+    OK:
+      properties:
+        message:
+          type: string

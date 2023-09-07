@@ -1,0 +1,94 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Stock API
+servers:
+  - url: http://localhost:3003
+tags:
+  - name: stockPrice
+    description: 株価取得
+paths:
+  /v1/sc/{security_cd}/stockPrice:
+    get:
+      summary: 株価取得
+      operationId: stockPrice
+      description: 現在の株価を取得する
+      tags:
+        - stockPrice
+      parameters:
+        - name: security_cd
+          in: path
+          description: 証券コードを指定する
+          required: true
+          schema:
+            type: string
+          example: "4722"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StockPrice"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "その他予期せぬエラー"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    StockPrice:
+      properties:
+        price:
+          type: number
+          format: double
+          description: 現在の株価
+          example: 1741
+        open:
+          type: number
+          format: double
+          description: 始値
+          example: 1715
+        high:
+          type: number
+          description: 高値
+          example: 1762
+        low:
+          type: number
+          description: 安値
+          example: 1704
+        volume:
+          type: number
+          description: 出来高
+          example: 221400
+    Error:
+      properties:
+        message:
+          type: string
+          description: エラーメッセージ
+        field:
+          type: string
+          description: エラー種別
+    OK:
+      properties:
+        message:
+          type: string
